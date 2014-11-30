@@ -1,0 +1,10 @@
+id: mediawiki-http
+kind: Service
+apiVersion: v1beta1
+port: 1000
+containerPort: 80
+selector:
+  name: mediawiki
+labels:
+  name: workspace-service
+

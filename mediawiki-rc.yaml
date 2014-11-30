@@ -1,0 +1,41 @@
+id: mediawiki-rc
+kind: ReplicationController
+apiVersion: v1beta1
+desiredState: 
+  replicas: 1
+  replicaSelector: 
+    name: mediawiki
+  podTemplate: 
+    desiredState: 
+      manifest: 
+        version: v1beta1
+        id: mediawiki
+        containers: 
+          - name: mediawiki-rc
+            image: synctree/mediawiki
+            cpu: 100
+            ports: 
+              - containerPort: 80
+                hostPort: 10000
+            env: 
+              - name: MEDIAWIKI_DB_HOST
+                value: 192.168.112.51:33000
+              - name: MEDIAWIKI_DB_USER
+                value: mediawiki
+              - name: MEDIAWIKI_DB_PASSWORD
+                value: neutre
+              - name: MEDIAWIKI_DB_NAME
+                value: mediawiki
+            volumeMounts:
+              - name: localsettings
+                mountPath: /var/www/html/LocalSettings.php
+        volumes:
+          - name: localsettings
+            source:
+              {hostDir: {path: /ceph/LocalSettings.php}}
+
+    labels: 
+      name: mediawiki
+      service: mediawiki-rc
+labels: 
+  name: mediawiki-replication-controller
